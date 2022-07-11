@@ -82,10 +82,60 @@ let urlencodedParser = bodyParser.urlencoded({extended:false})
         })
  
         app.get("/paintings/:paintingName",(req,res)=>{
-           console.log(req.params.paintingName);
+            painting.findOne({name:req.params.paintingName},function(err,peinture){
+                if(err){
+                    console.log(err);
+                } else{
+                    res.send(peinture);
+                }
+            })
+          
         })
 
- app.get("/",(req,res)=>{
+
+        app.put("/paintings/:paintingName" ,function(req,res){
+           painting.update(
+            {name:req.params.paintingName},
+            {name:req.body.name ,author: req.body.author ,price : req.body.price},
+            {overwrite:true},
+            function(err){
+                if(err){
+                    console.log(err);
+                }else{
+                    console.log("updated")
+                }
+            }
+           )
+        })
+        app.patch("/paintings/:paintingName" ,function(req,res){
+            painting.update(
+             {name:req.params.paintingName},
+             {$set: req.body},
+             function(err){
+                 if(err){
+                     console.log(err);
+                 }else{
+                     console.log(" PATCH updated")
+                 }
+             }
+            )
+         })
+         
+         app.delete("/paintings/:paintingAuthor" ,function(req,res){
+            painting.deleteOne(
+             {name:req.params.paintingName},
+             function(err){
+                 if(err){
+                     console.log(err);
+                 }else{
+                     console.log(" deleted updated succes");
+                 }
+             }
+            )
+         })
+
+
+         app.get("/",(req,res)=>{
     res.render("index");
  })
 
